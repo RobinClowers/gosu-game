@@ -5,6 +5,7 @@ class Player
 
   def initialize(x, y)
     @image = Image.new("media/starfighter.bmp")
+    @beep = Sample.new("media/beep.wav")
     @x = x
     @y = y
     @x_velocity = @y_velocity = @angle = 0.0
@@ -40,7 +41,10 @@ class Player
 
   def collect_stars(stars)
     remaining = stars.reject { |star| distance(@x, @y, star.x, star.y) < 35 }
-    (stars.count - remaining.count).times { @score += 1 }
+    (stars.count - remaining.count).times do
+      @beep.play
+      @score += 1
+    end
     remaining
   end
 end
