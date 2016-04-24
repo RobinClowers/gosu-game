@@ -39,6 +39,3 @@ class GameWindow < Gosu::Window
     @font.draw("Score: #{@player.score}", 10, 10, ZIndex::UI, 1.0, 1.0, 0xff_ffff00)
   end
 end
-
-window = GameWindow.new
-window.show
