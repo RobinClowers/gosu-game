@@ -6,42 +6,66 @@ class Player
   include Gosu
 
   attr_reader :score
+  TurnRate = 4.5
+  SpriteDirectionMap = {
+    up: 3,
+    right: 2,
+    down: 0,
+    left: 1,
+  }
 
   def initialize(x, y)
     @characters = Image.load_tiles("media/characters.png", 32, 48)
     @character = extract_character
+    @current_character = @character[0]
     @beep = Sample.new("media/beep.wav")
     @x = x
     @y = y
-    @x_velocity = @y_velocity = @angle = 0.0
     @score = 0
+    @direction = :stopped
   end
 
-  def turn_left
-    @angle -= 4.5
+  def left
+    @direction = :left
   end
 
-  def turn_right
-    @angle += 4.5
+  def right
+    @direction = :right
   end
 
-  def accelerate
-    @x_velocity += offset_x(@angle, 0.5)
-    @y_velocity += offset_y(@angle, 0.5)
+  def up
+    @direction = :up
+  end
+
+  def down
+    @direction = :down
   end
 
   def move
-    @x += @x_velocity
-    @y += @y_velocity
+    case @direction
+      when :up
+        @y -= 1
+      when :right
+        @x += 1
+      when :down
+        @y += 1
+      when :left
+        @x -= 1
+    end
     @x %= GameWindow::Height
     @y %= GameWindow::Width
+  end
 
-    @x_velocity *= 0.98
-    @y_velocity *= 0.98
+  def stop
+    @direction = :stopped
   end
 
   def draw
-    @character[0].draw_rot(@x, @y, ZIndex::Player, @angle)
+    unless @direction == :stopped
+      row = SpriteDirectionMap[@direction]
+      @current_character = @character[row * 3]
+    end
+    @current_character.draw_rot(@x, @y, ZIndex::Player, 0.0)
   end
 
   def collect_stars(stars)

@@ -23,14 +23,25 @@ class GameWindow < Gosu::Window
   end
 
   def update
-    @player.turn_left if button_down? KbLeft
-    @player.turn_right if button_down? KbRight
-    @player.accelerate if button_down? KbUp
+    @player.left if button_down? KbLeft
+    @player.right if button_down? KbRight
+    @player.up if button_down? KbUp
+    @player.down if button_down? KbDown
     @player.move
     @stars = @player.collect_stars(@stars)
 
     if rand(100) < 4 && @stars.length < 25
       @stars << Star.new(@star_animation)
+    end
+  end
+
+  def button_up(id)
+    if [KbDown,
+        KbUp,
+        KbRight,
+        KbLeft,
+      ].include? id
+      @player.stop
     end
   end
 
