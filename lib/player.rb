@@ -8,7 +8,8 @@ class Player
   attr_reader :score
 
   def initialize(x, y)
-    @image = Image.new("media/starfighter.bmp")
+    @characters = Image.load_tiles("media/characters.png", 32, 48)
+    @character = extract_character
     @beep = Sample.new("media/beep.wav")
     @x = x
     @y = y
@@ -40,7 +41,7 @@ class Player
   end
 
   def draw
-    @image.draw_rot(@x, @y, ZIndex::Player, @angle)
+    @character[0].draw_rot(@x, @y, ZIndex::Player, @angle)
   end
 
   def collect_stars(stars)
@@ -50,5 +51,14 @@ class Player
       @score += 1
     end
     remaining
+  end
+
+  def extract_character(character_index: 3)
+    characters_per_row = 4
+    start_index = character_index * characters_per_row
+    4.times.map do |row|
+      i = start_index * row
+      @characters[i..i + 2]
+    end.flatten(1)
   end
 end
