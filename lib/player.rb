@@ -1,3 +1,6 @@
+require 'gosu'
+require_relative 'z_index'
+
 class Player
   include Gosu
 
