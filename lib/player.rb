@@ -1,11 +1,14 @@
 class Player
   include Gosu
 
+  attr_reader :score
+
   def initialize(x, y)
     @image = Image.new("media/starfighter.bmp")
     @x = x
     @y = y
     @x_velocity = @y_velocity = @angle = 0.0
+    @score = 0
   end
 
   def turn_left
