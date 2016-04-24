@@ -24,6 +24,7 @@ class GameWindow < Gosu::Window
     @player.turn_right if button_down? KbRight
     @player.accelerate if button_down? KbUp
     @player.move
+    @stars = @player.collect_stars(@stars)
 
     if rand(100) < 4 && @stars.length < 25
       @stars << Star.new(@star_animation)

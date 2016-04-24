@@ -37,4 +37,10 @@ class Player
   def draw
     @image.draw_rot(@x, @y, ZIndex::Player, @angle)
   end
+
+  def collect_stars(stars)
+    remaining = stars.reject { |star| distance(@x, @y, star.x, star.y) < 35 }
+    (stars.count - remaining.count).times { @score += 1 }
+    remaining
+  end
 end
