@@ -1,6 +1,7 @@
 require 'gosu'
 require_relative 'player'
 require_relative 'star'
+require_relative 'tiler'
 require_relative 'z_index'
 
 class GameWindow < Gosu::Window
@@ -13,8 +14,9 @@ class GameWindow < Gosu::Window
     super Height, Width
     self.caption = "Gosu Tutorial Game"
 
-    @background_image = Image.new("media/space.png", tileable: true)
     @player = Player.new(Height / 2, Width / 2)
+    @background_image = Image.new("media/grass.bmp", tileable: true)
+    @tiler = Tiler.new(@background_image)
     @star_animation = Image.load_tiles("media/star.png", 25, 25)
     @stars = []
     @font = Font.new(20)
@@ -33,7 +35,7 @@ class GameWindow < Gosu::Window
   end
 
   def draw
-    @background_image.draw(0, 0, ZIndex::Background)
+    @tiler.draw
     @player.draw
     @stars.each(&:draw)
     @font.draw("Score: #{@player.score}", 10, 10, ZIndex::UI, 1.0, 1.0, 0xff_ffff00)
