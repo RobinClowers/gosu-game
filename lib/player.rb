@@ -1,4 +1,5 @@
 require 'gosu'
+require_relative 'game_window'
 require_relative 'z_index'
 
 class Player
@@ -31,8 +32,8 @@ class Player
   def move
     @x += @x_velocity
     @y += @y_velocity
-    @x %= 640
-    @y %= 480
+    @x %= GameWindow::Height
+    @y %= GameWindow::Width
 
     @x_velocity *= 0.98
     @y_velocity *= 0.98
