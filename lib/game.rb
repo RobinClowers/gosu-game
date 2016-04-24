@@ -5,12 +5,15 @@ require_relative 'z_index'
 class GameWindow < Gosu::Window
   include Gosu
 
+  Height = 640
+  Width = 480
+
   def initialize
-    super 640, 480
+    super Height, Width
     self.caption = "Gosu Tutorial Game"
 
     @background_image = Image.new("media/space.png", tileable: true)
-    @player = Player.new(320, 240)
+    @player = Player.new(Height / 2, Width / 2)
   end
 
   def update
