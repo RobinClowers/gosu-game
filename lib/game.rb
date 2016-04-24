@@ -1,4 +1,5 @@
 require 'gosu'
+require './lib/player'
 
 class GameWindow < Gosu::Window
   def initialize
@@ -6,6 +7,7 @@ class GameWindow < Gosu::Window
     self.caption = "Gosu Tutorial Game"
 
     @background_image = Gosu::Image.new("media/space.png", tileable: true)
+    @player = Player.new(320, 240)
   end
 
   def update
@@ -13,6 +15,7 @@ class GameWindow < Gosu::Window
 
   def draw
     @background_image.draw(0, 0, 0)
+    @player.draw
   end
 end
 
