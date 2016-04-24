@@ -1,5 +1,6 @@
 require 'gosu'
 require './lib/player'
+require './lib/z_index'
 
 class GameWindow < Gosu::Window
   def initialize
@@ -18,7 +19,7 @@ class GameWindow < Gosu::Window
   end
 
   def draw
-    @background_image.draw(0, 0, 0)
+    @background_image.draw(0, 0, ZIndex::Background)
     @player.draw
   end
 end
