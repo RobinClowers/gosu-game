@@ -1,6 +1,6 @@
 require 'gosu'
-require './lib/player'
-require './lib/z_index'
+require_relative 'player'
+require_relative 'z_index'
 
 class GameWindow < Gosu::Window
   def initialize
