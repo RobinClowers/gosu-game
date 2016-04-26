@@ -6,6 +6,8 @@ class Player
   include Gosu
 
   attr_reader :score
+
+  MoveSpeed = 3
   TurnRate = 4.5
   SpriteDirectionMap = {
     up: 3,
@@ -44,13 +46,13 @@ class Player
   def move
     case @direction
       when :up
-        @y -= 1
+        @y -= MoveSpeed
       when :right
-        @x += 1
+        @x += MoveSpeed
       when :down
-        @y += 1
+        @y += MoveSpeed
       when :left
-        @x -= 1
+        @x -= MoveSpeed
     end
     @x %= GameWindow::Height
     @y %= GameWindow::Width
