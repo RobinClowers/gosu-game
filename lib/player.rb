@@ -9,6 +9,7 @@ class Player
 
   MoveSpeed = 3
   TurnRate = 4.5
+  SpriteColumnCount = 3
   SpriteDirectionMap = {
     up: 3,
     right: 2,
@@ -67,7 +68,7 @@ class Player
   def draw
     unless @direction == :stopped
       row = SpriteDirectionMap[@direction]
-      @current_character = @character[row * 3 + @frame_index]
+      @current_character = @character[row * SpriteColumnCount + @frame_index]
       update_frame_index
     end
     @current_character.draw_rot(@x, @y, ZIndex::Player, 0.0)
