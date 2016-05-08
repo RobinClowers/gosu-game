@@ -15,7 +15,7 @@ class GameWindow < Gosu::Window
     self.caption = "Gosu Tutorial Game"
 
     @player = Player.new(Height / 2, Width / 2)
-    @background_image = Image.new("media/grass.bmp", tileable: true)
+    @background_image = Image.new("media/grass.png", tileable: true)
     @tiler = Tiler.new(@background_image)
     @star_animation = Image.load_tiles("media/star.png", 25, 25)
     @stars = []
