@@ -24,6 +24,8 @@ class Player
     @x = x
     @y = y
     @score = 0
+    @frame_index = 0
+    @frames_since_update = 0
     @direction = :stopped
   end
 
@@ -65,9 +67,21 @@ class Player
   def draw
     unless @direction == :stopped
       row = SpriteDirectionMap[@direction]
-      @current_character = @character[row * 3]
+      @current_character = @character[row * 3 + @frame_index]
+      update_frame_index
     end
     @current_character.draw_rot(@x, @y, ZIndex::Player, 0.0)
+  end
+
+  def update_frame_index
+    return @frames_since_update += 1 unless @frames_since_update > 9
+
+    @frames_since_update = 0
+    if @frame_index < 2
+      @frame_index += 1
+    else
+      @frame_index = 0
+    end
   end
 
   def collect_stars(stars)
