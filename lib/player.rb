@@ -8,7 +8,6 @@ class Player
   attr_reader :score
 
   MoveSpeed = 3
-  TurnRate = 4.5
   SpriteColumnCount = 3
   SpriteDirectionMap = {
     up: 3,
