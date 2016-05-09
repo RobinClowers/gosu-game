@@ -1,4 +1,5 @@
 require 'gosu'
+require 'rmagick'
 require_relative 'game_window'
 require_relative 'z_index'
 
@@ -8,23 +9,24 @@ class Player
   attr_reader :score
 
   MoveSpeed = 3
-  SpriteColumnCount = 3
+  CharacterRowCount = 3
+  SpriteColumnCount = 13
   SpriteDirectionMap = {
-    up: 3,
-    right: 2,
     down: 0,
+    right: 2,
     left: 1,
+    up: 3,
   }
 
   def initialize(x, y)
-    @characters = Image.load_tiles("media/characters.png", 32, 48)
-    @character = extract_character
-    @current_character = @character[0]
+    @character = Image.load_tiles("media/character_walking.png", 32, 41)
+    @walking_animation = extract_character
+    @current_character = @walking_animation[:down][0]
     @beep = Sample.new("media/beep.wav")
     @x = x
     @y = y
     @score = 0
-    @frame_index = 0
+    @animation_index = 0
     @frames_since_update = 0
     @direction = :stopped
   end
@@ -66,21 +68,30 @@ class Player
 
   def draw
     unless @direction == :stopped
-      row = SpriteDirectionMap[@direction]
-      @current_character = @character[row * SpriteColumnCount + @frame_index]
+      @current_character = @walking_animation[@direction][@animation_index]
       update_frame_index
     end
     @current_character.draw_rot(@x, @y, ZIndex::Player, 0.0)
+  end
+
+  def draw_all
+    row_index = 0
+    character_rows.each do |row|
+      row.each_with_index do |frame, index|
+        frame.draw_rot(@x + index * frame.width, @y + frame.height * row_index, ZIndex::Player, 0.0)
+      end
+      row_index += 1
+    end
   end
 
   def update_frame_index
     return @frames_since_update += 1 unless @frames_since_update > 9
 
     @frames_since_update = 0
-    if @frame_index < 2
-      @frame_index += 1
+    if @animation_index < SpriteColumnCount - 1
+      @animation_index += 1
     else
-      @frame_index = 0
+      @animation_index = 0
     end
   end
 
@@ -93,12 +104,28 @@ class Player
     remaining
   end
 
-  def extract_character(character_index: 3)
-    characters_per_row = 4
-    start_index = character_index * characters_per_row
-    4.times.map do |row|
-      i = start_index * row
-      @characters[i..i + 2]
-    end.flatten(1)
+  def extract_character
+    {
+      down: character_rows[0],
+      left: character_rows[1],
+      # .clone.map { |row|
+      #   Image.new(Magick::Image.from_blob(row.to_blob) {
+      #     self.format = "PNG"
+      #   }.transpose!)
+      # },
+      right: character_rows[1],
+      up: character_rows[2],
+    }
+  end
+
+  def character_rows
+    @character_rows ||= CharacterRowCount.times.map { |row|
+      extract_animation(y_offset: row)
+    }
+  end
+
+  def extract_animation(y_offset: 0, columns: SpriteColumnCount)
+    offset = y_offset * columns
+    @character[offset..offset + columns - 1]
   end
 end
