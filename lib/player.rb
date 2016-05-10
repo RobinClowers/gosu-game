@@ -107,12 +107,9 @@ class Player
   def extract_character
     {
       down: character_rows[0],
-      left: character_rows[1],
-      # .clone.map { |row|
-      #   Image.new(Magick::Image.from_blob(row.to_blob) {
-      #     self.format = "PNG"
-      #   }.transpose!)
-      # },
+      left: character_rows[1].clone.map { |image|
+        flop_image(image)
+      },
       right: character_rows[1],
       up: character_rows[2],
     }
@@ -127,5 +124,15 @@ class Player
   def extract_animation(y_offset: 0, columns: SpriteColumnCount)
     offset = y_offset * columns
     @character[offset..offset + columns - 1]
+  end
+
+  def flop_image(image)
+    Image.new(
+      Magick::Image.from_blob(image.to_blob) {
+        self.format = "RGBA"
+        self.depth = 8
+        self.size = "#{image.width}x#{image.height}"
+      }.first.flop!
+    )
   end
 end
