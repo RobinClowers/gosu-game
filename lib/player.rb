@@ -2,6 +2,7 @@ require 'gosu'
 require 'rmagick'
 require_relative 'game_window'
 require_relative 'z_index'
+require_relative 'animation'
 
 class Player
   include Gosu
@@ -9,45 +10,70 @@ class Player
   attr_reader :score
 
   MoveSpeed = 3
-  CharacterRowCount = 3
-  SpriteColumnCount = 13
-  SpriteDirectionMap = {
-    down: 0,
-    right: 2,
-    left: 1,
-    up: 3,
-  }
 
   def initialize(x, y)
-    @character = Image.load_tiles("media/character_walking.png", 32, 41)
-    @walking_animation = extract_character
-    @current_character = @walking_animation[:down][0]
+    @character = Animation.new(
+      "media/character_walking.png",
+      width: 32,
+      height: 41,
+      length: 13,
+      frame_rate: 10,
+      rows: 3,
+      columns: 13,
+    ) do |rows|
+      {
+        down: rows[0],
+        left: rows[1].clone.map { |image| flop_image(image) },
+        right: rows[1],
+        up: rows[2],
+      }
+    end
+    @attack_down = Animation.new(
+      "media/attack_down.png",
+      width: 38,
+      height: 48,
+      length: 8
+    ) do |rows|
+      {
+        down: rows[0],
+        left: rows[0],
+        right: rows[0],
+        up: rows[0],
+      }
+    end
+    @attack = false
     @beep = Sample.new("media/beep.wav")
     @x = x
     @y = y
     @score = 0
     @animation_index = 0
     @frames_since_update = 0
-    @direction = :stopped
+    @direction = :down
+    @stopped = :true
   end
 
   def left
+    @stopped = false
     @direction = :left
   end
 
   def right
+    @stopped = false
     @direction = :right
   end
 
   def up
+    @stopped = false
     @direction = :up
   end
 
   def down
+    @stopped = false
     @direction = :down
   end
 
   def move
+    return if @stopped
     case @direction
       when :up
         @y -= MoveSpeed
@@ -62,36 +88,20 @@ class Player
     @y %= GameWindow::Width
   end
 
+  def attack
+    @attack = true
+  end
+
   def stop
-    @direction = :stopped
+    @stopped = true
   end
 
   def draw
-    unless @direction == :stopped
-      @current_character = @walking_animation[@direction][@animation_index]
-      update_frame_index
-    end
-    @current_character.draw_rot(@x, @y, ZIndex::Player, 0.0)
-  end
-
-  def draw_all
-    row_index = 0
-    character_rows.each do |row|
-      row.each_with_index do |frame, index|
-        frame.draw_rot(@x + index * frame.width, @y + frame.height * row_index, ZIndex::Player, 0.0)
-      end
-      row_index += 1
-    end
-  end
-
-  def update_frame_index
-    return @frames_since_update += 1 unless @frames_since_update > 9
-
-    @frames_since_update = 0
-    if @animation_index < SpriteColumnCount - 1
-      @animation_index += 1
+    if @attack
+      @attack_down.draw(@direction, @x, @y)
+      @attack = @attack_down.in_progress?
     else
-      @animation_index = 0
+      @character.draw(@direction, @x, @y, animate: !@stopped)
     end
   end
 
@@ -102,28 +112,6 @@ class Player
       @score += 1
     end
     remaining
-  end
-
-  def extract_character
-    {
-      down: character_rows[0],
-      left: character_rows[1].clone.map { |image|
-        flop_image(image)
-      },
-      right: character_rows[1],
-      up: character_rows[2],
-    }
-  end
-
-  def character_rows
-    @character_rows ||= CharacterRowCount.times.map { |row|
-      extract_animation(y_offset: row)
-    }
-  end
-
-  def extract_animation(y_offset: 0, columns: SpriteColumnCount)
-    offset = y_offset * columns
-    @character[offset..offset + columns - 1]
   end
 
   def flop_image(image)

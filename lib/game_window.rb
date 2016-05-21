@@ -28,6 +28,7 @@ class GameWindow < Gosu::Window
     @player.right if button_down? KbRight
     @player.up if button_down? KbUp
     @player.down if button_down? KbDown
+    @player.attack if button_down? KbLeftShift
     @player.move
     @stars = @player.collect_stars(@stars)
 
