@@ -1,0 +1,4 @@
+#! /usr/bin/env sh
+
+ROOT=$(git rev-parse --show-toplevel)
+ruby $ROOT/gosu_game.rb
