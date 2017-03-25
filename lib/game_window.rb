@@ -1,4 +1,5 @@
 require 'gosu'
+require_relative 'gosu_image_refinements'
 require_relative 'player'
 require_relative 'star'
 require_relative 'tiler'
@@ -16,8 +17,7 @@ class GameWindow < Gosu::Window
 
     @player = Player.new(Height / 2, Width / 2)
     @grass = Image.new("media/grass.png", tileable: true)
-    @desert = Image.new("media/desert.png", tileable: true)
-    @tiler = Tiler.new(@grass, @desert)
+    @tiler = Tiler.new(@grass)
     @star_animation = Image.load_tiles("media/star.png", 25, 25)
     @stars = []
     @font = Font.new(20)
