@@ -12,79 +12,45 @@ class Player
   MoveSpeed = 3
 
   def initialize(x, y)
-    @ship = Animation.new(
-      "media/spaceship.png",
-      width: 15,
-      height: 24,
-      length: 2,
-      frame_rate: 10,
-      rows: 1,
-      columns: 2,
-    ) do |rows|
-      {
-        down: rows[0].clone.map { |image| rotate_image(image, 180) },
-        left: rows[0].clone.map { |image| rotate_image(image, 270) },
-        right: rows[0].clone.map { |image| rotate_image(image, 90) },
-        up: rows[0],
-      }
-    end
+    @characters = Image.load_tiles("media/spaceship.png", 15, 24)
+    @idle = @characters[0]
+    @moving = @characters[1]
     @attack = false
     @beep = Sample.new("media/beep.wav")
     @x = x
     @y = y
+    @x_velocity = @y_velocity = @angle = 0.0
     @score = 0
-    @animation_index = 0
-    @frames_since_update = 0
-    @direction = :down
-    @stopped = :true
   end
 
-  def left
-    @stopped = false
-    @direction = :left
+  def turn_left
+    @angle -= 4.5
   end
 
-  def right
-    @stopped = false
-    @direction = :right
+  def turn_right
+    @angle += 4.5
   end
 
-  def up
-    @stopped = false
-    @direction = :up
-  end
-
-  def down
-    @stopped = false
-    @direction = :down
+  def accelerate
+    @x_velocity += offset_x(@angle, 0.5)
+    @y_velocity += offset_y(@angle, 0.5)
   end
 
   def move
-    return if @stopped
-    case @direction
-      when :up
-        @y -= MoveSpeed
-      when :right
-        @x += MoveSpeed
-      when :down
-        @y += MoveSpeed
-      when :left
-        @x -= MoveSpeed
-    end
+    @x += @x_velocity
+    @y += @y_velocity
     @x %= GameWindow::Height
     @y %= GameWindow::Width
+    @x_velocity *= 0.98
+    @y_velocity *= 0.98
   end
 
   def attack
     @attack = true
   end
 
-  def stop
-    @stopped = true
-  end
-
   def draw
-    @ship.draw(@direction, @x, @y, animate: !@stopped)
+    @idle.draw_rot(@x, @y, ZIndex::Player, @angle)
   end
 
   def collect_stars(stars)
@@ -94,21 +60,5 @@ class Player
       @score += 1
     end
     remaining
-  end
-
-  def flop_image(image)
-    Image.new(image.to_rmagick.flop!)
-  end
-
-  def rotate_image(image, degrees)
-    Image.new(image.to_rmagick.rotate!(degrees))
-  end
-
-  def rmagick_image(image)
-    Magick::Image.from_blob(image.to_blob) {
-      self.format = "RGBA"
-      self.depth = 8
-      self.size = "#{image.width}x#{image.height}"
-    }.first
   end
 end
