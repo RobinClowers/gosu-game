@@ -13,8 +13,8 @@ class Player
 
   def initialize(x, y)
     @characters = Image.load_tiles("media/spaceship.png", 15, 24)
-    @idle = @characters[0]
-    @moving = @characters[1]
+    @idle = Image.new(@characters[0].to_rmagick.scale!(2))
+    @moving = Image.new(@characters[1].to_rmagick.scale!(2))
     @character = @idle
     @attack = false
     @beep = Sample.new("media/beep.wav")

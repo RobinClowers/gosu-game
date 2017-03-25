@@ -17,6 +17,7 @@ class GameWindow < Gosu::Window
 
     @player = Player.new(Height / 2, Width / 2)
     @grass = Image.new("media/grass.png", tileable: true)
+    @idle = Image.new(@grass.to_rmagick.scale!(2))
     @tiler = Tiler.new(@grass)
     @star_animation = Image.load_tiles("media/star.png", 25, 25)
     @stars = []
