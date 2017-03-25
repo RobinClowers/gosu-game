@@ -28,19 +28,6 @@ class Player
         up: rows[0],
       }
     end
-    @attack_down = Animation.new(
-      "media/attack_down.png",
-      width: 38,
-      height: 48,
-      length: 8
-    ) do |rows|
-      {
-        down: rows[0],
-        left: rows[0].clone.map { |image| rotate_image(image, 90) },
-        right: rows[0].clone.map { |image| rotate_image(image, 270) },
-        up: rows[0].clone.map { |image| rotate_image(image, 180) },
-      }
-    end
     @attack = false
     @beep = Sample.new("media/beep.wav")
     @x = x
@@ -97,13 +84,7 @@ class Player
   end
 
   def draw
-    if @attack
-      @attack_down.draw(@direction, @x, @y)
-      @attack = @attack_down.in_progress?
-    else
-      @ship.draw(@direction, @x, @y, animate: !@stopped)
-      # @ship.draw_sheet(@x, @y)
-    end
+    @ship.draw(@direction, @x, @y, animate: !@stopped)
   end
 
   def collect_stars(stars)
