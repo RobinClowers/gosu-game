@@ -36,9 +36,9 @@ class Player
     ) do |rows|
       {
         down: rows[0],
-        left: rows[0],
-        right: rows[0],
-        up: rows[0],
+        left: rows[0].clone.map { |image| rotate_image(image, 90) },
+        right: rows[0].clone.map { |image| rotate_image(image, 270) },
+        up: rows[0].clone.map { |image| rotate_image(image, 180) },
       }
     end
     @attack = false
@@ -115,12 +115,18 @@ class Player
   end
 
   def flop_image(image)
-    Image.new(
-      Magick::Image.from_blob(image.to_blob) {
-        self.format = "RGBA"
-        self.depth = 8
-        self.size = "#{image.width}x#{image.height}"
-      }.first.flop!
-    )
+    Image.new(rmagick_image(image).flop!)
+  end
+
+  def rotate_image(image, degrees)
+    Image.new(rmagick_image(image).rotate!(degrees))
+  end
+
+  def rmagick_image(image)
+    Magick::Image.from_blob(image.to_blob) {
+      self.format = "RGBA"
+      self.depth = 8
+      self.size = "#{image.width}x#{image.height}"
+    }.first
   end
 end
