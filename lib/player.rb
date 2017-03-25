@@ -15,6 +15,7 @@ class Player
     @characters = Image.load_tiles("media/spaceship.png", 15, 24)
     @idle = @characters[0]
     @moving = @characters[1]
+    @character = @idle
     @attack = false
     @beep = Sample.new("media/beep.wav")
     @x = x
@@ -32,8 +33,14 @@ class Player
   end
 
   def accelerate
+    @accelerating = true
+    @character = @moving
     @x_velocity += offset_x(@angle, 0.5)
     @y_velocity += offset_y(@angle, 0.5)
+  end
+
+  def stop
+    @character = @idle
   end
 
   def move
@@ -50,7 +57,7 @@ class Player
   end
 
   def draw
-    @idle.draw_rot(@x, @y, ZIndex::Player, @angle)
+    @character.draw_rot(@x, @y, ZIndex::Player, @angle)
   end
 
   def collect_stars(stars)

@@ -24,6 +24,7 @@ class GameWindow < Gosu::Window
   end
 
   def update
+    @player.stop
     @player.turn_left if button_down? KbLeft
     @player.turn_right if button_down? KbRight
     @player.accelerate if button_down? KbUp
