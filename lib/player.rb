@@ -48,8 +48,8 @@ class Player
     @y += @y_velocity
     @x %= GameWindow::Height
     @y %= GameWindow::Width
-    @x_velocity *= 0.98
-    @y_velocity *= 0.98
+    @x_velocity *= 0.95
+    @y_velocity *= 0.95
   end
 
   def attack
