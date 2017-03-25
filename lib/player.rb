@@ -12,7 +12,7 @@ class Player
   MoveSpeed = 3
 
   def initialize(x, y)
-    @character = Animation.new(
+    @character_walking = Animation.new(
       "media/character_walking.png",
       width: 32,
       height: 41,
@@ -101,7 +101,7 @@ class Player
       @attack_down.draw(@direction, @x, @y)
       @attack = @attack_down.in_progress?
     else
-      @character.draw(@direction, @x, @y, animate: !@stopped)
+      @character_walking.draw(@direction, @x, @y, animate: !@stopped)
     end
   end
 
