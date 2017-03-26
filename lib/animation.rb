@@ -12,9 +12,9 @@ class Animation
     @animation = yield(tile_rows)
   end
 
-  def draw(direction, x, y, animate: true)
-    @frame = @animation[direction][@index]
-    @frame.draw_rot(x, y, ZIndex::Player, 0.0)
+  def draw(key, x, y, z_index: ZIndex::Player, animate: true, angle: 0)
+    @frame = @animation[key][@index]
+    @frame.draw_rot(x, y, z_index, angle)
     return false unless animate
     update_index
     @index != 0

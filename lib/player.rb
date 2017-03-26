@@ -12,10 +12,23 @@ class Player
   MoveSpeed = 3
 
   def initialize(x, y)
+    @ship = Animation.new(
+      "media/spaceship.png",
+      width: 15,
+      height: 24,
+      length: 2,
+      frame_rate: 10,
+      rows: 1,
+      columns: 2,
+    ) do |rows|
     @characters = Image.load_tiles("media/spaceship.png", 15, 24)
-    @idle = Image.new(@characters[0].to_rmagick.scale!(2))
-    @moving = Image.new(@characters[1].to_rmagick.scale!(2))
-    @character = @idle
+      frames = rows[0].map { |image| Image.new(image.to_rmagick.scale!(2)) }
+      {
+        stopped: [frames[0], frames[0]],
+        moving: frames,
+      }
+    end
+    @ship_state = :stopped
     @attack = false
     @beep = Sample.new("media/beep.wav")
     @x = x
@@ -34,13 +47,13 @@ class Player
 
   def accelerate
     @accelerating = true
-    @character = @moving
+    @ship_state = :moving
     @x_velocity += offset_x(@angle, 0.5)
     @y_velocity += offset_y(@angle, 0.5)
   end
 
   def stop
-    @character = @idle
+    @ship_state = :stopped
   end
 
   def move
@@ -57,7 +70,7 @@ class Player
   end
 
   def draw
-    @character.draw_rot(@x, @y, ZIndex::Player, @angle)
+    @ship.draw(@ship_state, @x, @y, angle: @angle)
   end
 
   def collect_stars(stars)
