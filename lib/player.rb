@@ -16,7 +16,6 @@ class Player
       "media/spaceship.png",
       width: 15,
       height: 24,
-      length: 2,
       frame_rate: 10,
       rows: 1,
       columns: 2,

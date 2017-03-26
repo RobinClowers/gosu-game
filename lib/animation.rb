@@ -1,9 +1,8 @@
 class Animation
   include Gosu
 
-  def initialize(path, width:, height:, length:, frame_rate: 2, rows: 1, columns: 8)
+  def initialize(path, width:, height:, frame_rate: 2, rows: 1, columns: 8)
     @tiles = Image.load_tiles(path, width, height)
-    @length = length
     @frame_rate = frame_rate
     @frames_since_update = 0
     @index = 0
@@ -38,7 +37,7 @@ class Animation
     return @frames_since_update += 1 unless @frames_since_update > @frame_rate - 1
 
     @frames_since_update = 0
-    if @index < @length - 1
+    if @index < @column_count - 1
       @index += 1
     else
       @index = 0
