@@ -2,6 +2,7 @@ require 'gosu'
 require 'rmagick'
 require_relative 'game_window'
 require_relative 'z_index'
+require_relative 'sprite_sheet'
 require_relative 'animation'
 
 class Player
@@ -12,19 +13,17 @@ class Player
   MoveSpeed = 3
 
   def initialize(x, y)
-    @ship = Animation.new(
+    @ship = SpriteSheet.new(
       "media/spaceship.png",
       width: 15,
       height: 24,
-      frame_rate: 10,
       rows: 1,
       columns: 2,
     ) do |rows|
-    @characters = Image.load_tiles("media/spaceship.png", 15, 24)
       frames = rows[0].map { |image| Image.new(image.to_rmagick.scale!(2)) }
       {
-        stopped: [frames[0], frames[0]],
-        moving: frames,
+        stopped: Animation.new(frames[0]),
+        moving: Animation.new(frames, frame_interval: 10),
       }
     end
     @ship_state = :stopped
