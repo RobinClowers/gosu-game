@@ -13,7 +13,7 @@ class GameWindow < Gosu::Window
 
   def initialize
     super Height, Width
-    self.caption = "Gosu Tutorial Game"
+    self.caption = "Awesome Gosu Game!"
 
     @player = Player.new(Height / 2, Width / 2)
     @grass = Image.new("media/grass.png", tileable: true)
