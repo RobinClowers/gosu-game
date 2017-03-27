@@ -43,4 +43,8 @@ class GameWindow < Gosu::Window
     @stars.each(&:draw)
     @font.draw("Score: #{@player.score}", 10, 10, ZIndex::UI, 1.0, 1.0, 0xff_ffff00)
   end
+
+  def needs_cursor?
+    true
+  end
 end
