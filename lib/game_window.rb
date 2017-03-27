@@ -31,6 +31,7 @@ class GameWindow < Gosu::Window
     @player.turn_left if button_down? KbLeft
     @player.turn_right if button_down? KbRight
     @player.accelerate if button_down? KbUp
+    @player.waypoint(mouse_x, mouse_y) if button_down? MsLeft
     @player.move
     @stars = @player.collect_stars(@stars)
 

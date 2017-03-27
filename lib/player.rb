@@ -29,10 +29,17 @@ class Player
     @ship_state = :stopped
     @attack = false
     @beep = Sample.new("media/beep.wav")
-    @x = x
-    @y = y
+    @x = @waypoint_x = x
+    @y = @waypoint_y = y
     @x_velocity = @y_velocity = @angle = 0.0
     @score = 0
+  end
+
+  def waypoint(x, y)
+    @waypoint_x = x
+    @waypoint_y = y
+    @angle = angle(@x, @y, @waypoint_x, @waypoint_y)
+    accelerate
   end
 
   def turn_left
@@ -44,7 +51,6 @@ class Player
   end
 
   def accelerate
-    @accelerating = true
     @ship_state = :moving
     @x_velocity += offset_x(@angle, 0.5)
     @y_velocity += offset_y(@angle, 0.5)
