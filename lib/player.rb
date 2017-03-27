@@ -10,8 +10,6 @@ class Player
 
   attr_reader :score
 
-  MoveSpeed = 3
-
   def initialize(x, y)
     @ship = SpriteSheet.new(
       "media/spaceship.png",
