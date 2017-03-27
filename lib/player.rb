@@ -8,6 +8,8 @@ require_relative 'animation'
 class Player
   include Gosu
 
+  TurnSpeed = 4.5
+
   attr_reader :score
 
   def initialize(x, y)
@@ -36,16 +38,30 @@ class Player
   def waypoint(x, y)
     @waypoint_x = x
     @waypoint_y = y
-    @angle = angle(@x, @y, @waypoint_x, @waypoint_y)
+    target_angle = angle(@x, @y, @waypoint_x, @waypoint_y)
+    diff = angle_diff(@angle, target_angle)
+    if diff.positive?
+      if diff.abs > TurnSpeed
+        turn_right
+      else
+        @angle = target_angle
+      end
+    else
+      if diff.abs > TurnSpeed
+        turn_left
+      else
+        @angle = target_angle
+      end
+    end
     accelerate
   end
 
   def turn_left
-    @angle -= 4.5
+    @angle -= TurnSpeed
   end
 
   def turn_right
-    @angle += 4.5
+    @angle += TurnSpeed
   end
 
   def accelerate
