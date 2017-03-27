@@ -4,9 +4,11 @@ require_relative 'player'
 require_relative 'star'
 require_relative 'tiler'
 require_relative 'z_index'
+require_relative 'mouse_handler'
 
 class GameWindow < Gosu::Window
   include Gosu
+  include MouseHandler
 
   Height = 640
   Width = 480
