@@ -10,8 +10,8 @@ class GameWindow < Gosu::Window
   include Gosu
   include MouseHandler
 
-  Height = 640
-  Width = 480
+  Height = 1024
+  Width = 768
 
   def initialize
     super Height, Width
