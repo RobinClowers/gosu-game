@@ -9,6 +9,7 @@ class Player
   include Gosu
 
   TurnSpeed = 4.5
+  MaxVelocity = 6.0
 
   attr_reader :score
 
@@ -38,6 +39,47 @@ class Player
   def waypoint(x, y)
     @waypoint_x = x
     @waypoint_y = y
+    @accelerating = true
+  end
+
+  def turn_left
+    @angle -= TurnSpeed
+  end
+
+  def turn_right
+    @angle += TurnSpeed
+  end
+
+  def accelerate(magnitude: 0.5)
+    @ship_state = :moving
+    @x_velocity += offset_x(@angle, magnitude)
+    @y_velocity += offset_y(@angle, magnitude)
+    @x_velocity = MaxVelocity if @x_velocity > MaxVelocity
+    @y_velocity = MaxVelocity if @y_velocity > MaxVelocity
+  end
+
+  def stop
+    @ship_state = :stopped
+  end
+
+  def move
+    distance_from_waypoint = distance(@x, @y, @waypoint_x, @waypoint_y)
+    if @accelerating
+      accelerate
+    elsif @x_velocity > 2 || @y_velocity > 2
+      accelerate(magnitude: -0.5)
+    else
+      if !distance_from_waypoint == 0
+        accelerate(magnitude: 0.5 / distance_from_waypoint)
+      end
+    end
+    @x += @x_velocity
+    @y += @y_velocity
+    @x %= GameWindow::Height
+    @y %= GameWindow::Width
+    @x_velocity *= 0.95
+    @y_velocity *= 0.95
+
     target_angle = angle(@x, @y, @waypoint_x, @waypoint_y)
     diff = angle_diff(@angle, target_angle)
     if diff.positive?
@@ -53,34 +95,10 @@ class Player
         @angle = target_angle
       end
     end
-    accelerate
-  end
 
-  def turn_left
-    @angle -= TurnSpeed
-  end
-
-  def turn_right
-    @angle += TurnSpeed
-  end
-
-  def accelerate
-    @ship_state = :moving
-    @x_velocity += offset_x(@angle, 0.5)
-    @y_velocity += offset_y(@angle, 0.5)
-  end
-
-  def stop
-    @ship_state = :stopped
-  end
-
-  def move
-    @x += @x_velocity
-    @y += @y_velocity
-    @x %= GameWindow::Height
-    @y %= GameWindow::Width
-    @x_velocity *= 0.95
-    @y_velocity *= 0.95
+    if distance_from_waypoint < 100
+      @accelerating = false
+    end
   end
 
   def attack
